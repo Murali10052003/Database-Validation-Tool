@@ -1,1 +1,0 @@
-"""Oracle adapter (source database)."""
