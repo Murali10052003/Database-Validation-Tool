@@ -120,5 +120,6 @@ def _mapping_candidates(database_type: DatabaseType) -> list[str]:
         DatabaseType.AZURE_SQL: ["azure_sql", "sqlserver"],
         DatabaseType.SQLSERVER: ["sqlserver"],
         DatabaseType.MYSQL: ["mysql"],
+        DatabaseType.AZURE_MYSQL: ["azure_mysql", "mysql"],
     }
     return engine_fallbacks.get(database_type, [database_type.value])

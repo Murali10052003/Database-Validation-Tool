@@ -19,6 +19,7 @@ _FOLDING: dict[DatabaseType, str] = {
     DatabaseType.AZURE_SQL: "preserve",
     DatabaseType.SQLSERVER: "preserve",
     DatabaseType.MYSQL: "preserve",
+    DatabaseType.AZURE_MYSQL: "preserve",
 }
 
 

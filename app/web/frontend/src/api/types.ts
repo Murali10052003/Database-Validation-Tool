@@ -5,7 +5,8 @@ export type DatabaseType =
   | "mysql"
   | "sqlserver"
   | "azure_postgresql"
-  | "azure_sql";
+  | "azure_sql"
+  | "azure_mysql";
 
 export type DeploymentPlatform = "self_managed" | "azure" | "unknown";
 export type AuthMethod = "password" | "entra";

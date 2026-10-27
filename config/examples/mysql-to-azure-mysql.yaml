@@ -1,0 +1,44 @@
+# Example: validate a MySQL → Azure Database for MySQL migration.
+#
+# Secrets are read from the environment using ${VAR} interpolation so this file
+# can be committed safely. Copy .env.example to .env and fill in credentials.
+# Azure Database for MySQL can also be the source (type: azure_mysql).
+
+migration:
+  name: Sales MySQL to Azure MySQL
+  description: Validate the sales schema migration into Azure Database for MySQL.
+
+source:
+  type: mysql
+  platform: self_managed
+  host: ${SOURCE_HOST:-localhost}
+  port: ${SOURCE_PORT:-3306}
+  database: ${SOURCE_DATABASE:-sales}
+  username: ${SOURCE_USERNAME}
+  password: ${SOURCE_PASSWORD}
+  connect_timeout_seconds: 30
+
+target:
+  type: azure_mysql
+  platform: azure
+  host: ${TARGET_HOST}   # e.g. myserver.mysql.database.azure.com
+  port: ${TARGET_PORT:-3306}
+  database: ${TARGET_DATABASE:-sales}
+  username: ${TARGET_USERNAME}
+  password: ${TARGET_PASSWORD}
+  # auth_method: entra   # use a Microsoft Entra ID token instead of a password
+  ssl: true
+
+mapping:
+  schemas:
+    sales: sales
+  excluded_objects: []
+  type_overrides: {}
+
+validation:
+  profile: standard
+  schema:
+    compare_columns: true
+    compare_indexes: true
+  data:
+    checksum: false

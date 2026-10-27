@@ -76,10 +76,14 @@ export function forgetAccount(connection: Partial<ConnectionInput>): void {
   accounts.delete(connectionKey(connection));
 }
 
+export function supportsEntraSignIn(type: string | undefined): boolean {
+  return type === "azure_postgresql" || type === "azure_mysql";
+}
+
 export async function authorizeConnection(connection: Partial<ConnectionInput>, interactive = false): Promise<Partial<ConnectionInput>> {
   if (connection.auth_method !== "entra") return { ...connection };
-  if (connection.type !== "azure_postgresql") {
-    throw new Error("Browser Microsoft sign-in is currently supported for Azure PostgreSQL only.");
+  if (!supportsEntraSignIn(connection.type)) {
+    throw new Error("Browser Microsoft sign-in is currently supported for Azure PostgreSQL and Azure MySQL only.");
   }
   if (connection.entra_mode === "local") {
     const { entra_token, entra_token_expires_at, ...metadata } = connection;

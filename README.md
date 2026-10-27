@@ -62,18 +62,25 @@ certification is **pending**, not implied by passing unit tests.
 | MySQL | `mysql` | Implemented adapter; outside the current datatype certification matrix |
 | SQL Server | `sqlserver` | Implemented adapter; outside the current datatype certification matrix |
 | Azure SQL | `azure_sql` | Implemented adapter; outside the current datatype certification matrix |
+| Azure Database for MySQL | `azure_mysql` | MySQL adapter on Azure (TLS always on, password or Entra ID); source or target; outside the current datatype certification matrix |
 
 The PostgreSQL adapter identifier is historical: use `azure_postgresql` with
 `platform: self_managed` for a non-Azure PostgreSQL database. UI engine choices may
 be narrower than the config/API adapter registry. Use the supplied YAML examples
-for PostgreSQL-to-PostgreSQL datatype tests.
+for PostgreSQL-to-PostgreSQL datatype tests. In the UI, **MySQL** and **Azure MySQL**
+are available as sources, and only **Azure MySQL** as a target (MySQL → Azure MySQL and
+Azure MySQL → Azure MySQL); see `config/examples/mysql-to-azure-mysql.yaml`. "Azure SQL"
+is Azure SQL Database (the SQL Server engine on Azure).
+
+SQL Server and Azure SQL are currently hidden from the web UI database dropdowns
+pending testing. Their config/API adapters remain available.
 
 ## Application Features
 
-- Connect to Oracle, PostgreSQL, MySQL, SQL Server, and Azure SQL databases.
+- Connect to Oracle, PostgreSQL, MySQL, Azure MySQL, SQL Server, and Azure SQL databases.
 - Test source and target connections before starting a validation.
-- Sign in to Azure PostgreSQL with Microsoft Entra ID using browser authentication or
-  opt-in local developer credentials.
+- Sign in to Azure PostgreSQL or Azure MySQL with Microsoft Entra ID using browser
+  authentication or opt-in local developer credentials.
 - Discover schemas, tables, columns, indexes, constraints, sequences, views, routines,
   triggers, and partitions.
 - Automatically match source and target schemas and tables, with optional manual mapping.
@@ -671,8 +678,11 @@ for status semantics, storage/retention settings, API endpoints, and security li
 
 ## Microsoft Entra ID Authentication
 
-For an Azure PostgreSQL connection, select **Microsoft Entra ID** and enter the
-PostgreSQL role name as the username, which can differ from the sign-in account.
+For an Azure PostgreSQL or Azure MySQL connection, select **Microsoft Entra ID** and
+enter the database role (PostgreSQL) or Entra database user (MySQL) name as the
+username, which can differ from the sign-in account. Azure MySQL needs an Entra
+administrator configured on the server and an Entra user created in the database; the
+access token is sent as the password over TLS (`mysql_clear_password`).
 
 - **Browser sign-in (Docker and local):** enter **Application (client) ID** and
   **Directory (tenant) ID**, register the displayed **SPA redirect URI**, and click
@@ -693,7 +703,8 @@ Browser mode never falls back to local credentials. Tokens remain in browser mem
 and are supplied to the backend only for database operations. Reloading requires
 testing/signing in again; a long operation that needs another connection after token
 expiry may need restarting. Browser Entra support for Azure SQL/SQL Server is not
-implemented. In CLI YAML, `auth_method: entra` retains the default credential chain.
+implemented (Azure PostgreSQL and Azure MySQL only). In CLI YAML, `auth_method: entra`
+retains the default credential chain.
 
 ### Azure App Registration Setup (Browser Sign-In)
 

@@ -49,6 +49,12 @@ def _load_azure_sql() -> type[DatabaseAdapter]:
     return AzureSQLAdapter
 
 
+def _load_azure_mysql() -> type[DatabaseAdapter]:
+    from app.adapters.azure_mysql.adapter import AzureMySQLAdapter
+
+    return AzureMySQLAdapter
+
+
 class AdapterFactory:
     """Creates adapters from configuration via a database-type registry."""
 
@@ -59,6 +65,7 @@ class AdapterFactory:
             DatabaseType.MYSQL: _load_mysql,
             DatabaseType.SQLSERVER: _load_sqlserver,
             DatabaseType.AZURE_SQL: _load_azure_sql,
+            DatabaseType.AZURE_MYSQL: _load_azure_mysql,
         }
 
     def register(self, db_type: DatabaseType, loader: AdapterLoader) -> None:

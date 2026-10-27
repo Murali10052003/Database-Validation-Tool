@@ -84,6 +84,8 @@ test("system schemas are recognised per engine and hidden unless requested", () 
   assert.equal(model.isSystemSchema("public", "azure_postgresql"), false);
   assert.equal(model.isSystemSchema("sys", "sqlserver"), true);
   assert.equal(model.isSystemSchema("performance_schema", "mysql"), true);
+  assert.equal(model.isSystemSchema("performance_schema", "azure_mysql"), true);
+  assert.equal(model.isSystemSchema("appdb", "azure_mysql"), false);
   assert.equal(model.isSystemSchema("SYS", undefined), false);
   const names = ["HR", "SYS", "SALES", "XS$NULL", "hr_archive"];
   assert.deepEqual(model.filterSchemas(names, {query: "", showSystem: false, engine: "oracle"}), ["HR", "SALES", "hr_archive"]);

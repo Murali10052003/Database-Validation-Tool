@@ -8,7 +8,7 @@ import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
 import { BookmarkIcon, DatabaseIcon } from "../ui/icons";
 import { connectionEngineNames } from "./savedConnectionModel";
-import { entraRedirectUri, forgetAccount, prepareEntra } from "../../auth/entra";
+import { entraRedirectUri, forgetAccount, prepareEntra, supportsEntraSignIn } from "../../auth/entra";
 
 type Values = Partial<Record<FieldName | "entra_mode" | "entra_client_id" | "entra_tenant_id", string | boolean>>;
 
@@ -36,7 +36,7 @@ function build(def: DbTypeDef, values: Values): Partial<ConnectionInput> {
     platform: def.platform,
     username: String(values.username ?? "").trim(),
     auth_method: authMethod,
-    entra_mode: authMethod === "entra" && def.value === "azure_postgresql" && values.entra_mode === "local" ? "local" : "browser",
+    entra_mode: authMethod === "entra" && supportsEntraSignIn(def.value) && values.entra_mode === "local" ? "local" : "browser",
     ssl: values.ssl === true,
     host: String(values.host ?? "").trim(),
     port: numOrNull(values.port ?? def.defaults?.port),
@@ -46,7 +46,7 @@ function build(def: DbTypeDef, values: Values): Partial<ConnectionInput> {
   if (def.fields.includes("database"))
     conn.database = String(values.database ?? "").trim() || null;
   conn.password = authMethod === "entra" ? "" : String(values.password ?? "");
-  if (authMethod === "entra" && def.value === "azure_postgresql" && conn.entra_mode === "browser") {
+  if (authMethod === "entra" && supportsEntraSignIn(def.value) && conn.entra_mode === "browser") {
     conn.entra_client_id = String(values.entra_client_id ?? "").trim();
     conn.entra_tenant_id = String(values.entra_tenant_id ?? "").trim();
   }
@@ -262,7 +262,7 @@ export function ConnectionForm({ title, dbTypes, check, onChange, load, onSaved,
           })}
         </div>
 
-        {usesEntra && def.value === "azure_postgresql" && !metadataOnly && (
+        {usesEntra && supportsEntraSignIn(def.value) && !metadataOnly && (
           <>
           <label className="field">
             <span className="field__label">Entra credential source</span>

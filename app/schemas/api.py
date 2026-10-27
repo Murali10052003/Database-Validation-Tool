@@ -29,6 +29,9 @@ from app.core.enums import (
     ValidationStatus,
 )
 
+# Engines whose Entra tokens are issued for the OSS RDBMS resource and sent as the password.
+_ENTRA_DATABASE_TYPES = {DatabaseType.AZURE_POSTGRESQL, DatabaseType.AZURE_MYSQL}
+
 
 class ConnectionInput(BaseModel):
     """A single database connection as entered in the UI."""
@@ -54,9 +57,10 @@ class ConnectionInput(BaseModel):
     @model_validator(mode="after")
     def validate_entra_mode(self):
         if self.entra_mode == "local":
-            if self.auth_method != AuthMethod.ENTRA or self.type != DatabaseType.AZURE_POSTGRESQL:
+            if self.auth_method != AuthMethod.ENTRA or self.type not in _ENTRA_DATABASE_TYPES:
                 raise ValueError(
-                    "Local credentials require Azure PostgreSQL with Entra authentication."
+                    "Local credentials require Azure PostgreSQL or Azure MySQL "
+                    "with Entra authentication."
                 )
             if os.environ.get("MV_ALLOW_LOCAL_ENTRA", "").lower() != "true":
                 raise ValueError(

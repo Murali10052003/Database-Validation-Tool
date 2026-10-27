@@ -14,7 +14,7 @@ import "../styles/dashboard.css";
 
 const engineNames = {
   oracle: "Oracle", mysql: "MySQL", sqlserver: "SQL Server",
-  azure_postgresql: "PostgreSQL", azure_sql: "Azure SQL",
+  azure_postgresql: "PostgreSQL", azure_sql: "Azure SQL", azure_mysql: "Azure MySQL",
 };
 
 export function DashboardPage() {

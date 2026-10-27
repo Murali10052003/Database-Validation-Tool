@@ -16,6 +16,7 @@ from app.models.result import ValidationResult
 _MAX_IDENTIFIER = {
     DatabaseType.AZURE_POSTGRESQL: 63,
     DatabaseType.MYSQL: 64,
+    DatabaseType.AZURE_MYSQL: 64,
     DatabaseType.ORACLE: 128,
     DatabaseType.SQLSERVER: 128,
     DatabaseType.AZURE_SQL: 128,

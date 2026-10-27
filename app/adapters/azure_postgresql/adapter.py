@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import asyncio
 import time
 from typing import Any
 
+from app.adapters._entra import resolve_connection_secret
 from app.adapters._helpers import maybe_await
 from app.adapters._profile import KeyRange, ProfileRequest, TableProfile
 from app.adapters.azure_postgresql.capabilities import AZURE_POSTGRESQL_CAPABILITIES
@@ -15,7 +15,7 @@ from app.adapters.azure_postgresql.metadata import PostgreSQLMetadataCollector
 from app.adapters.azure_postgresql.type_mapping import get_normalizer
 from app.adapters.base import DatabaseAdapter
 from app.core.config import DatabaseConnectionConfig
-from app.core.enums import AuthMethod, DatabaseType, DeploymentPlatform
+from app.core.enums import DatabaseType, DeploymentPlatform
 from app.core.exceptions import ConnectionError, DriverNotInstalledError, QueryError
 from app.core.logging import get_logger
 from app.models.capabilities import DatabaseCapabilities
@@ -70,21 +70,7 @@ class AzurePostgreSQLAdapter(DatabaseAdapter):
 
     async def _resolve_password(self) -> str:
         """Return the connection secret: an Entra token or the configured password."""
-        if self.config.auth_method == AuthMethod.ENTRA:
-            if self.config.entra_browser_auth:
-                if not self.config.entra_token or not self.config.entra_token_expires_at:
-                    raise ConnectionError(
-                        "Microsoft sign-in is required. Test this connection again."
-                    )
-                if self.config.entra_token_expires_at <= time.time() + 30:
-                    raise ConnectionError(
-                        "Microsoft sign-in has expired. Test this connection again."
-                    )
-                return self.config.entra_token.get_secret_value()
-            client_id = self.config.options.get("managed_identity_client_id")
-            # Token acquisition is blocking; keep the event loop responsive.
-            return await asyncio.to_thread(fetch_entra_token, client_id)
-        return self.config.password.get_secret_value()
+        return await resolve_connection_secret(self.config, fetch_entra_token)
 
     async def connect(self) -> None:
         if self._connection is not None:

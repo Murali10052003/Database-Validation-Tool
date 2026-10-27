@@ -64,13 +64,6 @@ export const SOURCE_DB_TYPES: DbTypeDef[] = [
     defaults: { port: 3306 },
   },
   {
-    value: "sqlserver",
-    label: "SQL Server",
-    platform: "self_managed",
-    fields: ["host", "port", "database", "username", "auth_method", "password", "ssl"],
-    defaults: { port: 1433 },
-  },
-  {
     value: "azure_postgresql",
     label: "Azure PostgreSQL",
     platform: "azure",
@@ -78,11 +71,11 @@ export const SOURCE_DB_TYPES: DbTypeDef[] = [
     defaults: { port: 5432, ssl: true },
   },
   {
-    value: "azure_sql",
-    label: "Azure SQL",
+    value: "azure_mysql",
+    label: "Azure MySQL",
     platform: "azure",
     fields: ["host", "port", "database", "username", "auth_method", "password", "ssl"],
-    defaults: { port: 1433, ssl: true },
+    defaults: { port: 3306, ssl: true },
   },
 ];
 
@@ -95,11 +88,11 @@ export const TARGET_DB_TYPES: DbTypeDef[] = [
     defaults: { port: 5432, ssl: true },
   },
   {
-    value: "azure_sql",
-    label: "Azure SQL",
+    value: "azure_mysql",
+    label: "Azure MySQL",
     platform: "azure",
     fields: ["host", "port", "database", "username", "auth_method", "password", "ssl"],
-    defaults: { port: 1433, ssl: true },
+    defaults: { port: 3306, ssl: true },
   },
 ];
 

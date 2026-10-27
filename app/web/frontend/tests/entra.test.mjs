@@ -126,7 +126,9 @@ test("missing config, unsupported engines, and cancelled sign-in fail safely", a
   await assert.rejects(missing.auth.authorizeConnection(connection, true), /Application \(client\) ID/);
   const {auth, fail} = harness();
   await auth.initializeEntra();
-  await assert.rejects(auth.authorizeConnection({...connection, type: "azure_sql"}, true), /PostgreSQL only/);
+  await assert.rejects(auth.authorizeConnection({...connection, type: "azure_sql"}, true), /PostgreSQL and Azure MySQL only/);
+  const mysql = await auth.authorizeConnection({...connection, type: "azure_mysql"}, true);
+  assert.equal(mysql.entra_token, "ephemeral-secret");
   fail();
   await assert.rejects(auth.authorizeConnection(connection, true), error => {
     assert.match(error.message, /did not complete/);

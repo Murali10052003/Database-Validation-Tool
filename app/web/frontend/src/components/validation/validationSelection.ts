@@ -93,6 +93,7 @@ const SYSTEM_SCHEMAS: Record<DatabaseType, { names: string[]; patterns: RegExp[]
   mysql: { names: ["mysql", "information_schema", "performance_schema", "sys"], patterns: [] },
   sqlserver: { names: SQL_SERVER_SYSTEM, patterns: [] },
   azure_sql: { names: SQL_SERVER_SYSTEM, patterns: [] },
+  azure_mysql: { names: ["mysql", "information_schema", "performance_schema", "sys", "azure_sys"], patterns: [] },
 };
 
 // Engine-owned schemas that are rarely migrated; hidden from the picker unless asked for.

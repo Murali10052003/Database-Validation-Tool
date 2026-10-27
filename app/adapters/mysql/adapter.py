@@ -35,6 +35,10 @@ logger = get_logger(__name__)
 class MySQLAdapter(DatabaseAdapter):
     """Adapter for MySQL using ``mysql-connector-python``."""
 
+    DB_TYPE: DatabaseType = DatabaseType.MYSQL
+    DEFAULT_PLATFORM: DeploymentPlatform = DeploymentPlatform.SELF_MANAGED
+    DISPLAY_NAME = "MySQL"
+
     def __init__(self, config: DatabaseConnectionConfig) -> None:
         super().__init__(config)
         self._connection: Any | None = None
@@ -66,7 +70,7 @@ class MySQLAdapter(DatabaseAdapter):
         except DriverNotInstalledError:
             raise
         except Exception as exc:
-            raise ConnectionError(f"Failed to connect to MySQL: {exc}") from exc
+            raise ConnectionError(f"Failed to connect to {self.DISPLAY_NAME}: {exc}") from exc
 
     async def close(self) -> None:
         if self._connection is not None:
@@ -97,7 +101,7 @@ class MySQLAdapter(DatabaseAdapter):
             latency = (time.perf_counter() - start) * 1000
             return ConnectionResult(
                 success=True,
-                database_type=DatabaseType.MYSQL,
+                database_type=self.DB_TYPE,
                 version=info.version,
                 message="Connection successful.",
                 latency_ms=round(latency, 2),
@@ -105,7 +109,7 @@ class MySQLAdapter(DatabaseAdapter):
         except Exception as exc:
             return ConnectionResult(
                 success=False,
-                database_type=DatabaseType.MYSQL,
+                database_type=self.DB_TYPE,
                 error=str(exc),
                 message="Connection failed.",
             )
@@ -115,8 +119,8 @@ class MySQLAdapter(DatabaseAdapter):
         result = await self._fetch("SELECT VERSION()", None)
         version = result.scalar()
         return DatabaseInfo(
-            database_type=DatabaseType.MYSQL,
-            platform=DeploymentPlatform.SELF_MANAGED,
+            database_type=self.DB_TYPE,
+            platform=self.DEFAULT_PLATFORM,
             version=str(version) if version else None,
             default_schema=self.config.database,
         )

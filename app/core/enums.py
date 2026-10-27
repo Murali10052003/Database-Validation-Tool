@@ -21,6 +21,7 @@ class DatabaseType(str, Enum):
     SQLSERVER = "sqlserver"
     AZURE_POSTGRESQL = "azure_postgresql"
     AZURE_SQL = "azure_sql"
+    AZURE_MYSQL = "azure_mysql"
 
 
 class DeploymentPlatform(str, Enum):

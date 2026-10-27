@@ -3,7 +3,7 @@ import type { SavedConnection } from "../../data/savedConnections";
 
 export const connectionEngineNames: Record<DatabaseType, string> = {
   oracle: "Oracle", mysql: "MySQL", sqlserver: "SQL Server",
-  azure_postgresql: "PostgreSQL", azure_sql: "Azure SQL",
+  azure_postgresql: "PostgreSQL", azure_sql: "Azure SQL", azure_mysql: "Azure MySQL",
 };
 
 export function matchesConnection(saved: SavedConnection, current: Partial<ConnectionInput>): boolean {

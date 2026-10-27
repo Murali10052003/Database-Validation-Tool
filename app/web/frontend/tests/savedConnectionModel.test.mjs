@@ -32,6 +32,7 @@ test("selection ignores secrets but detects edits to connection settings", () =>
     assert.equal(model.matchesConnection(profiles[0], { ...profiles[0], ...change }), false);
   }
   assert.equal(model.connectionEngineNames.azure_postgresql, "PostgreSQL");
+  assert.equal(model.connectionEngineNames.azure_mysql, "Azure MySQL");
 });
 
 test("backend profile storage strips secrets, retains browser originals and surfaces failures", async () => {
